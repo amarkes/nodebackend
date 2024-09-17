@@ -108,7 +108,6 @@ exports.updateUser = async (req, res, next) => {
 
     // Obtenha o usuário logado a partir do middleware de autenticação
     const loggedInUser = req.user;
-
     // Verifique se o usuário é staff ou está tentando atualizar seu próprio perfil
     if (loggedInUser.isStaff || loggedInUser._id === parseInt(id)) {
       // Buscar o usuário pelo ID
@@ -151,5 +150,33 @@ exports.updateUser = async (req, res, next) => {
       console.error(err);
       return res.status(500).json({ message: 'Internal server error' });
     }
+  }
+};
+
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const loggedInUser = req.user;
+    console.log(loggedInUser)
+
+    if (loggedInUser.isStaff || loggedInUser._id === parseInt(userId)) {
+      // Verifica se o usuário existe
+      const user = await User.findByPk(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Deleta o usuário
+      await user.destroy();
+      return res.status(200).json({ message: 'User deleted successful.' });
+    } else {
+      return res.status(401).json({ message: 'You are not authorized to delete this user' });
+    }
+
+
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ message: 'Server error.' });
   }
 };

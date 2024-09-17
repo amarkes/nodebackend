@@ -2,12 +2,32 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { User } = require('../../models');
 const Sequelize = require('sequelize');
-const { jwtSecret } = require('../config');
 
 exports.generateAffiliateCode = (userId) => {
     const algo = userId % 26;
     const char = String.fromCharCode(65 + algo);
-    return `MY${algo}U${char}`;
+    return `${process.env.AFFILIATECODE}${algo}U${char}`;
+};
+exports.generateJWTData = (user) => {
+    if (!user || !user.id) {
+        return;
+    }
+    return {
+        _id: user.id,
+        _username: user.username,
+        _email: user.email,
+        _firstName: user.firstName,
+        _lastName: user.lastName,
+        _document: user.document,
+        _mobile: user.mobile,
+        _phone: user.phone,
+        _gender: user.gender,
+        _active: user.active,
+        _roles: user.roles,
+        _tags: user.tags,
+        _birth: user.birth,
+        _notes: user.notes
+    }
 };
 
 exports.generateUserResponse = (user, token) => ({
@@ -53,8 +73,8 @@ exports.verifyPassword = async (inputPassword, userPassword) => {
     return await bcrypt.compare(inputPassword, userPassword);
 };
 
-exports.generateToken = (userId) => {
-    return jwt.sign({ _id: userId }, process.env.JWT_SECRET || jwtSecret, { expiresIn: '30d' });
+exports.generateToken = (user) => {
+    return jwt.sign(this.generateJWTData(user), process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
 exports.extractTokenFromHeader = (authHeader) => {
@@ -72,7 +92,7 @@ exports.extractTokenFromHeader = (authHeader) => {
 
 exports.verifyToken = (token) => {
     try {
-        return jwt.verify(token, process.env.JWT_SECRET || jwtSecret);
+        return jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
         throw new Error('Invalid or expired token');
     }

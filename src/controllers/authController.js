@@ -1,8 +1,5 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const { User } = require('../../models');
 const Sequelize = require('sequelize');
-const { jwtSecret } = require('../config');
 const { validationResult } = require('express-validator');
 const { generateAffiliateCode, generateUserResponse,
   findUserByIdentifier, verifyPassword, generateToken,
@@ -53,8 +50,7 @@ exports.register = async (req, res, next) => {
     // Gerar o código de afiliado agora que o usuário foi criado e tem um ID
     const affiliateCode = generateAffiliateCode(user.id);
     user = await user.update({ affiliate: affiliateCode });
-
-    const token = jwt.sign({ _id: user.id }, jwtSecret, { expiresIn: '30d' });
+    const token = generateToken(user)
     const userResponse = generateUserResponse(user, token);
 
     res.status(201).send(userResponse);
@@ -88,7 +84,7 @@ exports.login = async (req, res, next) => {
     }
 
     // Gera o token JWT
-    const token = generateToken(user.id);
+    const token = generateToken(user);
 
     // Envia o token no cabeçalho e no corpo da resposta
     res.header('Authorization', token).send({ token });
@@ -106,7 +102,7 @@ exports.refreshToken = async (req, res, next) => {
     // Busca o usuário correspondente ao ID do token
     const user = await findUserById(decoded._id);
     // Gera um novo token
-    const newToken = generateToken(user.id);
+    const newToken = generateToken(user);
     // Retorna o novo token
     res.json({ token: newToken });
   } catch (err) {

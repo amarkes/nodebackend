@@ -21,8 +21,7 @@ exports.getAllUsers = async (req, res, next) => {
     const hasNextPage = offset + users.length < count;
     res.formatList(users, count, parseInt(page), Math.ceil(count / limit), hasNextPage);
   } catch (err) {
-    res.status(400);
-    next(err);
+      next(err);
   }
 };
 
@@ -33,9 +32,12 @@ exports.updateUserIsStaff = async (req, res, next) => {
 
     // Busca o usuário pelo ID
     const user = await findUserById(id);
-    console.log(user)
     if (!user) {
-      res.status(404).json({ message: 'User not found' });
+      const error = {
+        statusCode: 404,
+        errors: [{user: 'User not found'}]
+      }
+      next(error);
       return;
     }
 
@@ -46,9 +48,13 @@ exports.updateUserIsStaff = async (req, res, next) => {
     // Prepara a resposta com os dados do usuário
     const userResponse = prepareUserResponse(user);
 
-    res.status(200).json(userResponse);
+    const successResponse = {
+      statusCode: 200,
+      message: 'Operation completed successfully',
+      data: userResponse
+    };
+    next(successResponse)
   } catch (err) {
-    res.status(400);
     next(err);
   }
 };
@@ -61,7 +67,11 @@ exports.updateUserActivate = async (req, res, next) => {
     const user = await findUserById(id);
 
     if (!user) {
-      res.status(404).json({ message: 'User not found' });
+      const error = {
+        statusCode: 404,
+        errors: [{user: 'User not found'}]
+      }
+      next(error);
       return;
     }
 
@@ -71,9 +81,13 @@ exports.updateUserActivate = async (req, res, next) => {
     // Prepara a resposta com os dados do usuário
     const userResponse = prepareUserResponse(user);
 
-    res.status(200).json(userResponse);
+    const successResponse = {
+      statusCode: 200,
+      message: 'Operation completed successfully',
+      data: userResponse
+    };
+    next(successResponse)
   } catch (err) {
-    res.status(400);
     next(err);
   }
 }
@@ -86,7 +100,12 @@ exports.updateUser = async (req, res, next) => {
     // Verificar se há erros de validação
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      const error = {
+        statusCode: 400,
+        errors: errors.array()
+      }
+      next(error);
+      return;
     }
 
     // Defina os campos que podem ser alterados
@@ -113,7 +132,12 @@ exports.updateUser = async (req, res, next) => {
       // Buscar o usuário pelo ID
       const user = await User.findByPk(id);
       if (!user) {
-        throw new Error('User not found');
+        const error = {
+          statusCode: 404,
+          errors: [{user: 'User not found'}]
+        }
+        next(error);
+        return;
       }
 
       // Atualiza apenas os campos permitidos
@@ -138,45 +162,69 @@ exports.updateUser = async (req, res, next) => {
         affiliate: user.affiliate,
         isStaff: user.isStaff,
       };
-
-      res.status(200).json(userResponse);
+      const successResponse = {
+        statusCode: 200,
+        message: 'Operation completed successfully',
+        data: userResponse
+      };
     } else {
-      return res.status(401).json({ message: 'You are not authorized to update this user' });
+      const error = {
+        statusCode: 401,
+        errors: [{message: 'You are not authorized to update this user'}]
+      }
+      next(error);
+      return;
     }
   } catch (err) {
     if (err.message === 'User not found') {
-      return res.status(404).json({ message: err.message });
+      const error = {
+        statusCode: 404,
+        errors: [{message: err.message}]
+      }
+      next(error);
+      return;
     } else {
-      console.error(err);
-      return res.status(500).json({ message: 'Internal server error' });
+      next(err);
     }
   }
 };
 
 
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const loggedInUser = req.user;
-    console.log(loggedInUser)
 
     if (loggedInUser.isStaff || loggedInUser._id === parseInt(userId)) {
       // Verifica se o usuário existe
       const user = await User.findByPk(userId);
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        const error = {
+          statusCode: 404,
+          errors: [{user: 'User not found'}]
+        }
+        next(error);
+        return;
       }
 
       // Deleta o usuário
       await user.destroy();
-      return res.status(200).json({ message: 'User deleted successful.' });
+      const successResponse = {
+        statusCode: 204,
+        message: 'User deleted successful.',
+      };
+      next(successResponse)
     } else {
-      return res.status(401).json({ message: 'You are not authorized to delete this user' });
+      const error = {
+        statusCode: 401,
+        errors: [{message: 'You are not authorized to delete this user'}]
+      }
+      next(error);
+      return;
     }
 
 
   } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({ message: 'Server error.' });
+    next(error);
   }
 };

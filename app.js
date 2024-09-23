@@ -12,18 +12,20 @@ const errorHandler = require('./src/middleware/errorHandler');
 // const protectedRoutes = require('./src/protectedRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
+const { defaultErrorHandler } = require('./src/middleware/responseUtils');
 
 const app = express();
 
 app.use(express.json());
 app.use(responseFormatter); // Usar o middleware
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-reference', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use('/api', authRoutes);
-app.use('/api', userRoutes);
+app.use('/services', authRoutes);
+app.use('/services', userRoutes);
 
 // Middleware de tratamento de erros deve ser o último middleware a ser usado
-app.use(errorHandler);
+// app.use(errorHandler);
+app.use(defaultErrorHandler);
 
 const PORT = process.env.PORT || 3000;
 

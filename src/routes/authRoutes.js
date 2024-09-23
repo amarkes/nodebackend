@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/register:
+ * /register:
  *   post:
  *     tags:
  *       - Auth
@@ -27,7 +27,7 @@ router.post('/register', registerValidation, authController.register);
 
 /**
  * @swagger
- * /api/login:
+ * /login:
  *   post:
  *     tags:
  *       - Auth
@@ -66,7 +66,7 @@ router.post('/register', registerValidation, authController.register);
 router.post('/login', authController.login);
 /**
  * @swagger
- * /api/refresh-token:
+ * /refresh-token:
  *   post:
  *     tags:
  *       - Auth
@@ -91,7 +91,7 @@ router.post('/login', authController.login);
 router.post('/refresh-token', authController.refreshToken);
 /**
  * @swagger
- * /api/me:
+ * /me:
  *   get:
  *     tags:
  *       - Auth

@@ -79,12 +79,12 @@ exports.generateToken = (user) => {
 
 exports.extractTokenFromHeader = (authHeader) => {
     if (!authHeader) {
-        throw new Error('Authorization header is required');
+        return;
     }
 
     const token = authHeader.split(' ')[1]; // O token vem após 'Bearer'
     if (!token) {
-        throw new Error('Token is required');
+        return;
     }
 
     return token;
@@ -94,7 +94,7 @@ exports.verifyToken = (token) => {
     try {
         return jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
-        throw new Error('Invalid or expired token');
+        return;
     }
 };
 
@@ -108,7 +108,7 @@ exports.findUserById = async (userId) => {
     });
 
     if (!user || !user.active) {
-        throw new Error('User not found or not active');
+        return;
     }
 
     return user;

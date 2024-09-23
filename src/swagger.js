@@ -10,6 +10,11 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'Documentação da API'
     },
+    servers: [
+      {
+        url: `${process.env.API_BASE_URL}`
+      }
+    ],
     components: {
       securitySchemes: {
         bearerAuth: {

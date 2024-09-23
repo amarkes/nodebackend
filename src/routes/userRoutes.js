@@ -9,7 +9,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/users:
+ * /users:
  *   get:
  *     tags:
  *       - Users
@@ -44,7 +44,7 @@ const router = express.Router();
 router.get('/users', auth, isAdmin, userController.getAllUsers);
 /**
  * @swagger
- * /api/users/{id}/staff:
+ * /users/{id}/staff:
  *   patch:
  *     tags:
  *       - Users
@@ -81,7 +81,7 @@ router.patch('/users/:id/staff', auth, isAdmin, userController.updateUserIsStaff
 
 /**
  * @swagger
- * /api/users/{id}/activate:
+ * /users/{id}/activate:
  *   patch:
  *     tags:
  *       - Users
@@ -118,7 +118,7 @@ router.patch('/users/:id/activate', auth, isAdmin, userController.updateUserActi
 
 /**
  * @swagger
- * /api/users/{id}:
+ * /users/{id}:
  *   patch:
  *     tags:
  *       - Users
@@ -159,7 +159,7 @@ router.patch('/users/:id', auth, updateValidation, userController.updateUser);
 
 /**
  * @swagger
- * /api/users/{id}:
+ * /users/{id}:
  *   delete:
  *     tags:
  *       - Users
@@ -174,7 +174,7 @@ router.patch('/users/:id', auth, updateValidation, userController.updateUser);
  *           type: string
  *         description: ID do usuário
  *     responses:
- *       200:
+ *       204:
  *         description: Usuário deletado
  *       400:
  *         description: Requisição inválida

@@ -50,7 +50,7 @@ const swaggerOptions = {
         UserRegister: {
           type: 'object',
           properties: {
-            username: { type: 'string', example: ''},
+            username: { type: 'string', example: '' },
             email: { type: 'string', example: '' },
             password: { type: 'string', example: '' },
             firstName: { type: 'string', example: '' },
@@ -79,7 +79,24 @@ const swaggerOptions = {
             birth: { type: 'string', format: 'date', example: '' },
             notes: { type: 'string', example: '' },
           }
-        }
+        },
+        Discounts: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', example: 'Desconto INSS' },
+            description: { type: 'string', example: 'Desconto aplicado ao INSS' },
+            discountType: { type: 'string', enum: ['percent', 'fixed'], example: 'percent' },
+            value: { type: 'number', example: 10.5 },
+            applicableTo: { type: 'string', example: 'faixa salarial' },
+            startDate: { type: 'string', format: 'date', example: '2024-01-01' },
+            endDate: { type: 'string', format: 'date', example: '2024-12-31' },
+            progressive: { type: 'boolean', example: false },
+            minValue: { type: 'number', example: 100.0 },
+            maxValue: { type: 'number', example: 1000.0 },
+            baseCalculation: { type: 'string', enum: ['bruto', 'liquido', 'outros'], example: 'bruto' },
+            priority: { type: 'integer', example: 1 },
+          },
+        },
       }
     },
     security: [{ bearerAuth: [] }],
@@ -87,6 +104,7 @@ const swaggerOptions = {
   apis: ['./src/routes/*.js'],
   // apis: ['./src/authUserRoutes.js', './src/protectedRoutes.js'] // Certifique-se de incluir os caminhos corretos
 };
+
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 module.exports = swaggerDocs;

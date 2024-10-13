@@ -4,6 +4,7 @@ const { ValidationError, UniqueConstraintError } = require('sequelize');
 
 const errorHandler = (err, req, res, next) => {
   const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
+  console.log(statusCode)
 
   if (err instanceof UniqueConstraintError) {
     res.status(400).json({

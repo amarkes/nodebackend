@@ -40,6 +40,7 @@ exports.generateUserResponse = (user, token) => ({
     tags: user.tags,
     affiliate: user.affiliate,
     token,
+    isStaff: user.isStaff,
 });
 
 exports.prepareUserResponse = (user) => ({

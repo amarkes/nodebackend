@@ -34,8 +34,7 @@ Thumbs.db
 *.sublime-workspace
 
 # Sequelize specific
-migrations/
-seeders/
+
 
 # Optional npm cache directory
 .npm

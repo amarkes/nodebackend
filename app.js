@@ -14,12 +14,18 @@ const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const discountRoutes = require('./src/routes/discountRoutes');
 const { defaultErrorHandler } = require('./src/middleware/responseUtils');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',  // Permite apenas a origem do Vite
+}));
 
 const options = {
   customJs: '/custom.js', // Caminho para o JS customizado
 };
+
 
 app.use(express.json());
 app.use(responseFormatter); // Usar o middleware

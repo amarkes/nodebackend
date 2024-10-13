@@ -7,8 +7,9 @@ const { generateAffiliateCode, generateUserResponse,
 
 exports.register = async (req, res, next) => {
   const errors = validationResult(req);
+  console.log(errors)
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ errors: errors.array().map(err => err.msg) });
   }
 
   try {
@@ -28,7 +29,7 @@ exports.register = async (req, res, next) => {
       birth,
       notes,
     } = req.body;
-
+    console.log(password)
     // Criando o usuário
     let user = await User.create({
       username,
@@ -60,10 +61,11 @@ exports.register = async (req, res, next) => {
     next(successResponse);
     // res.status(201).send(userResponse);
   } catch (err) {
+    console.log(err)
     if (err instanceof Sequelize.UniqueConstraintError) {
       const error = {
         statusCode: 400,
-        errors: [{username: 'Username or email already exists'}]
+        errors: ['Username or email already exists']
       }
       next(error);
       return;
@@ -109,7 +111,7 @@ exports.login = async (req, res, next) => {
     const token = generateToken(user);
 
     // Envia o token no cabeçalho e no corpo da resposta
-    res.header('Authorization', token).send({ token });
+    res.header('Authorization', token).send({ token, user });
   } catch (err) {
     next(err);
   }

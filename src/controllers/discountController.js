@@ -1,5 +1,29 @@
 const { Discount } = require('../../models');
 
+exports.getDiscountById = async (req, res, next) => {
+  try {
+    const discountId = req.params.id;
+    const discount = await Discount.findByPk(discountId); // Usando Sequelize, por exemplo
+
+    if (!discount) {
+      const error = {
+        statusCode: 404,
+        errors: [{ discount: 'Discount not found' }]
+      }
+      next(error);
+      return;
+    }
+    const successResponse = {
+      statusCode: 200,
+      message: 'Operation completed successfully',
+      data: discount
+    };
+    next(successResponse)
+  } catch (error) {
+    next(err);
+  }
+};
+
 exports.getAllDiscounts = async (req, res, next) => {
   try {
     const { limit = 10, page = 1 } = req.query; // Parâmetros de paginação
@@ -64,7 +88,7 @@ exports.updateDiscount = async (req, res, next) => {
     if (!discount) {
       const error = {
         statusCode: 404,
-        errors: [{user: 'Discount not found'}]
+        errors: [{ user: 'Discount not found' }]
       }
       next(error);
       return;
@@ -84,7 +108,8 @@ exports.updateDiscount = async (req, res, next) => {
       baseCalculation,
       priority,
     } = req.body;
-    await discount.update({title,
+    await discount.update({
+      title,
       description,
       discountType,
       value,
@@ -95,13 +120,14 @@ exports.updateDiscount = async (req, res, next) => {
       minValue,
       maxValue,
       baseCalculation,
-      priority,});
-      const successResponse = {
-        statusCode: 200,
-        message: 'Operation completed successfully',
-        data: discount
-      };
-      next(successResponse)
+      priority,
+    });
+    const successResponse = {
+      statusCode: 200,
+      message: 'Operation completed successfully',
+      data: discount
+    };
+    next(successResponse)
   } catch (err) {
     next(err);
   }
@@ -114,7 +140,7 @@ exports.deleteDiscount = async (req, res, next) => {
     if (!discount) {
       const error = {
         statusCode: 404,
-        errors: [{user: 'Discount not found'}]
+        errors: [{ user: 'Discount not found' }]
       }
       next(error);
       return;

@@ -7,6 +7,32 @@ const router = express.Router();
 
 /**
  * @swagger
+ * /discounts/{id}:
+ *   get:
+ *     tags:
+ *       - Discounts
+ *     summary: Obter desconto por ID
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do desconto
+ *     responses:
+ *       200:
+ *         description: Desconto retornado com sucesso
+ *       404:
+ *         description: Desconto não encontrado
+ *       500:
+ *         description: Erro interno do servidor
+ */
+router.get('/discounts/:id', auth, isAdmin, discountController.getDiscountById);
+
+/**
+ * @swagger
  * /discounts:
  *   get:
  *     tags:
@@ -19,6 +45,7 @@ const router = express.Router();
  *         description: Lista de descontos
  */
 router.get('/discounts', auth, isAdmin, discountController.getAllDiscounts);
+
 
 /**
  * @swagger

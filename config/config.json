@@ -1,20 +1,20 @@
 {
   "development": {
-    "username": "postgres",
+    "username": "root",
     "password": "super123",
     "database": "nodebackend",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
-    "username": "postgres",
+    "username": "root",
     "password": "super123",
     "database": "nodebackend",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
-    "username": "postgres",
+    "username": "root",
     "password": "super123",
     "database": "nodebackend",
     "host": "127.0.0.1",

@@ -191,3 +191,42 @@ router.delete('/users/:id', auth, userController.deleteUser);
 module.exports = router;
 
 // verifyTokenAndPermission('create_user')
+
+/**
+ * @swagger
+ * /users/{id}/password:
+ *   patch:
+ *     tags:
+ *       - Users
+ *     summary: Trocar a senha do usuário, apenas o próprio usuário ou um administrador tem acesso
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do usuário
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newPassword:
+ *                 type: string
+ *                 description: Nova senha do usuário
+ *                 example: "novaSenha123"
+ *     responses:
+ *       200:
+ *         description: Senha alterada com sucesso
+ *       400:
+ *         description: Requisição inválida
+ *       401:
+ *         description: Acesso negado
+ *       404:
+ *         description: Usuário não encontrado
+ */
+router.patch('/users/:id/password',auth, isAdmin, userController.updateUserPassword);

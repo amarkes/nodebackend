@@ -1,5 +1,6 @@
 const { User } = require('../../models');
 const { validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
 const { findUserById, prepareUserResponse, getAllowedUpdates } = require('../middleware/userHelper');
 
 exports.getAllUsers = async (req, res, next) => {
@@ -224,6 +225,46 @@ exports.deleteUser = async (req, res, next) => {
     }
 
 
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateUserPassword = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+      const error = {
+        statusCode: 404,
+        errors: [{user: 'Password is required'}]
+      }
+      next(error);
+      return;
+    }
+
+    // Hash da nova senha
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Encontrar o usuário e atualizar a senha
+    const user = await User.findByPk(id);
+    if (!user) {
+      const error2 = {
+        statusCode: 404,
+        errors: [{user: 'User not found'}]
+      }
+      next(error2);
+    }
+
+    user.password = hashedPassword;
+    await user.save();
+
+    const successResponse = {
+      statusCode: 200,
+      message: 'Password updated successful.',
+    };
+    next(successResponse)
   } catch (error) {
     next(error);
   }

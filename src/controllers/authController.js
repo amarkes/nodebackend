@@ -7,7 +7,6 @@ const { generateAffiliateCode, generateUserResponse,
 
 exports.register = async (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors)
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array().map(err => err.msg) });
   }
@@ -61,7 +60,6 @@ exports.register = async (req, res, next) => {
     next(successResponse);
     // res.status(201).send(userResponse);
   } catch (err) {
-    console.log(err)
     if (err instanceof Sequelize.UniqueConstraintError) {
       const error = {
         statusCode: 400,
@@ -70,7 +68,6 @@ exports.register = async (req, res, next) => {
       next(error);
       return;
     } else {
-      console.log(err);
       next(err);
     }
   }
@@ -96,7 +93,7 @@ exports.login = async (req, res, next) => {
 
     // Verifica se a senha está correta
     const isMatch = await verifyPassword(password, user.password);
-
+    console.log(isMatch)
     if (!isMatch) {
       const error = {
         statusCode: 400,

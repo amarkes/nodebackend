@@ -19,7 +19,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(cors({
-  origin: 'http://localhost:3000',  // Permite apenas a origem do Vite
+  origin: 'http://localhost:5173',  // Permite apenas a origem do Vite
 }));
 
 const options = {
